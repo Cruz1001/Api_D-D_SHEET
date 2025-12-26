@@ -28,6 +28,7 @@ class Character(Base):
     intelligence = Column(Integer, nullable=False)
     wisdom = Column(Integer, nullable=False)
     charisma = Column(Integer, nullable=False)
+    max_hit_points = Column(Integer)
 
     proficiency_bonus = Column(Integer)
 

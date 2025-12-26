@@ -18,6 +18,7 @@ class CharacterBase(BaseModel):
     size: str
     passive_perception: int
     quote: str
+    max_hit_points: Optional[int] = None
     spell_casting_ability: Optional[str] = None
     strength: int
     dexterity: int
@@ -63,6 +64,7 @@ class CharacterUpdate(BaseModel):
     hit_points: Optional[int] = None
     speed: Optional[int] = None
     size: Optional[str] = None
+    max_hit_points: Optional[int] = None
     passive_perception: Optional[int] = None
     spell_casting_ability: Optional[str] = None
 

@@ -57,6 +57,7 @@ def create_character(character: CharacterCreate, db: Session = Depends(get_db)):
     intelligence=character.intelligence,
     wisdom=character.wisdom,
     charisma=character.charisma,
+    max_hit_points=character.max_hit_points,
     skills=skills
     )
 
