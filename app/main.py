@@ -7,6 +7,8 @@ from app.routes.spell_slots import router as spell_slot_router
 from app.routes.spells import router as spells_router
 from fastapi.middleware.cors import CORSMiddleware
 
+app = FastAPI(title="Who are you?")
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],  # depois a gente restringe
@@ -15,7 +17,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app = FastAPI(title="Who are you?")
+
 
 app.include_router(character_router)
 app.include_router(inventory_router)
