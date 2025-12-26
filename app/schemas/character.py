@@ -17,6 +17,7 @@ class CharacterBase(BaseModel):
     speed: int
     size: str
     passive_perception: int
+    quote: str
 
     strength: int
     dexterity: int

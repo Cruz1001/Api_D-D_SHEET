@@ -20,6 +20,7 @@ class Character(Base):
     speed = Column(Integer, nullable=False)
     size = Column(String, nullable=False)
     passive_perception = Column(Integer, nullable=False)
+    quote = Column(String, default="")
 
     strength = Column(Integer, nullable=False)
     dexterity = Column(Integer, nullable=False)

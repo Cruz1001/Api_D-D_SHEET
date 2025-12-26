@@ -40,6 +40,7 @@ def create_character(character: CharacterCreate, db: Session = Depends(get_db)):
     name=character.name,
     race=character.race,
     classes=[cls.dict() for cls in character.classes],
+    quote=character.quote,
     background=character.background,
     level=total_level,
     xp=character.xp,
