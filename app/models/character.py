@@ -21,7 +21,7 @@ class Character(Base):
     size = Column(String, nullable=False)
     passive_perception = Column(Integer, nullable=False)
     quote = Column(String, default="")
-
+    spell_casting_ability = Column(String, default="intelligence")
     strength = Column(Integer, nullable=False)
     dexterity = Column(Integer, nullable=False)
     constitution = Column(Integer, nullable=False)

@@ -18,7 +18,7 @@ class CharacterBase(BaseModel):
     size: str
     passive_perception: int
     quote: str
-
+    spell_casting_ability: Optional[str] = None
     strength: int
     dexterity: int
     constitution: int
