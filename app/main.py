@@ -5,7 +5,15 @@ import app.models
 from app.routes.inventory import router as inventory_router
 from app.routes.spell_slots import router as spell_slot_router
 from app.routes.spells import router as spells_router
+from fastapi.middleware.cors import CORSMiddleware
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # depois a gente restringe
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 app = FastAPI(title="Who are you?")
 
