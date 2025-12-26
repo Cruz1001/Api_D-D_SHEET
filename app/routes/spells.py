@@ -48,3 +48,23 @@ def prepare_spell(
     db.commit()
     db.refresh(spell)
     return spell
+
+@router.delete("/{spell_id}", response_model=dict)
+def delete_spell(
+    character_id: int,
+    spell_id: int,
+    db: Session = Depends(get_db)
+):
+    # Buscamos a magia garantindo que pertença ao personagem
+    spell = db.query(Spell).filter(
+        Spell.id == spell_id,
+        Spell.character_id == character_id
+    ).first()
+
+    if not spell:
+        raise HTTPException(status_code=404, detail="Magia não encontrada")
+
+    db.delete(spell)
+    db.commit()
+    
+    return {"detail": "Magia deletada com sucesso"}

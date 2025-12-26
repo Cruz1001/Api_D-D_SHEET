@@ -64,6 +64,7 @@ class CharacterUpdate(BaseModel):
     speed: Optional[int] = None
     size: Optional[str] = None
     passive_perception: Optional[int] = None
+    spell_casting_ability: Optional[str] = None
 
     strength: Optional[int] = None
     dexterity: Optional[int] = None

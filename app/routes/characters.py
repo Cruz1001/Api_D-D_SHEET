@@ -162,3 +162,23 @@ def get_abilities(character_id: int, db: Session = Depends(get_db)):
         .all()
     )
     return abilities
+
+@router.delete("/{character_id}/abilities/{ability_id}", response_model=dict)
+def delete_ability(
+    character_id: int,
+    ability_id: int,
+    db: Session = Depends(get_db)
+):
+    # Busca a habilidade vinculada ao personagem específico
+    ability = db.query(Ability).filter(
+        Ability.id == ability_id,
+        Ability.character_id == character_id
+    ).first()
+
+    if not ability:
+        raise HTTPException(status_code=404, detail="Habilidade não encontrada")
+
+    db.delete(ability)
+    db.commit()
+    
+    return {"detail": "Habilidade deletada com sucesso"}
