@@ -12,7 +12,7 @@ from app.schemas.ability import AbilityCreate, AbilityResponse
 from app.services.skills import generate_skills, generate_saving_throws
 from app.services.level import calculate_level
 from app.services.proeficiency import calculate_proficiency_bonus
-
+from app.models.saving_throw import SavingThrow
 
 router = APIRouter(prefix="/characters", tags=["characters"])
 
@@ -20,7 +20,7 @@ router = APIRouter(prefix="/characters", tags=["characters"])
 def create_character(character: CharacterCreate, db: Session = Depends(get_db)):
     # gera todas as skills automaticamente
     skills_schema = generate_skills(character)
-
+    saves_schema = generate_saving_throws(character) # Sua função do services/skills.py
     # converte schema -> model ORM
     skills = [
         Skill(
@@ -29,6 +29,12 @@ def create_character(character: CharacterCreate, db: Session = Depends(get_db)):
             proficient=skill.proficient
         )
         for skill in skills_schema
+    ]
+    # ADICIONE ISSO:
+    from app.models.saving_throw import SavingThrow # Importe o novo model
+    saving_throws = [
+        SavingThrow(name=s.name, attribute=s.attribute, proficient=s.proficient) 
+        for s in saves_schema
     ]
     # soma o nível total baseado nas classes
     total_level = sum(cls.level for cls in character.classes)
@@ -41,6 +47,7 @@ def create_character(character: CharacterCreate, db: Session = Depends(get_db)):
     race=character.race,
     classes=[cls.dict() for cls in character.classes],
     quote=character.quote,
+    #saving_throws=[st.dict() for st in character.saving_throws],
     spell_casting_ability=character.spell_casting_ability,
     background=character.background,
     level=total_level,
@@ -58,7 +65,8 @@ def create_character(character: CharacterCreate, db: Session = Depends(get_db)):
     wisdom=character.wisdom,
     charisma=character.charisma,
     max_hit_points=character.max_hit_points,
-    skills=skills
+    skills=skills,
+    saving_throws=saving_throws
     )
 
 
@@ -79,7 +87,14 @@ def get_character(character_id: int, db: Session = Depends(get_db)):
     character = db.query(Character).filter(Character.id == character_id).first()
     # Se o personagem antigo não tem o campo gravado no banco
     if not character.saving_throws:
-        character.saving_throws = generate_saving_throws(character)
+        saves_schema = generate_saving_throws(character)
+        character.saving_throws = [
+            SavingThrow(name=s.name, attribute=s.attribute, proficient=s.proficient) 
+            for s in saves_schema
+        ]
+        db.commit() # Salva eles permanentemente no banco
+        db.refresh(character)
+        
     if not character:
         raise HTTPException(status_code=404, detail="Character not found")
     return character
@@ -186,3 +201,19 @@ def delete_ability(
     db.commit()
     
     return {"detail": "Habilidade deletada com sucesso"}
+@router.patch("/{character_id}/saving-throws/{save_name}", response_model=CharacterResponse)
+def update_saving_throw(character_id: int, save_name: str, db: Session = Depends(get_db)):
+    character = db.query(Character).filter(Character.id == character_id).first()
+    if not character:
+        raise HTTPException(status_code=404, detail="Character not found")
+
+    # Busca o save específico na lista do personagem
+    save = next((s for s in character.saving_throws if s.name == save_name), None)
+    if not save:
+        raise HTTPException(status_code=404, detail="Saving Throw not found")
+
+    save.proficient = not save.proficient # Inverte o estado
+    db.commit()
+    db.refresh(character)
+
+    return character

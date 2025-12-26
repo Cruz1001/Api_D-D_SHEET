@@ -90,3 +90,4 @@ class AbilityResponse(AbilityBase):
 
     class Config:
         from_attributes = True
+        

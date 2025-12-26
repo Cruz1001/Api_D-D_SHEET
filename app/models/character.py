@@ -29,7 +29,7 @@ class Character(Base):
     wisdom = Column(Integer, nullable=False)
     charisma = Column(Integer, nullable=False)
     max_hit_points = Column(Integer)
-    saving_throws = Column(JSON, default=[])  # lista de skills de saving throw
+    #saving_throws = Column(JSON, default=[])  # lista de skills de saving throw
 
     proficiency_bonus = Column(Integer)
 
@@ -64,3 +64,5 @@ class Character(Base):
     cascade="all, delete-orphan"
     )
 
+    # Adicione o import e a relação
+    saving_throws = relationship("SavingThrow", back_populates="character", cascade="all, delete-orphan")
