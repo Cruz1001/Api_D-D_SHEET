@@ -44,11 +44,13 @@ class SkillResponse(BaseModel):
 class CharacterCreate(CharacterBase):
     
     skills: list[Skill] = []
+    saving_throws: list[Skill]
     pass
 
 class CharacterResponse(CharacterBase):
     id: int
     skills: list[SkillResponse]
+    saving_throws: list[Skill]
     
     class Config:
         from_attributes = True

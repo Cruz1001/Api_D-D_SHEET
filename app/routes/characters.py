@@ -9,7 +9,7 @@ from app.models.ability import Ability
 from app.schemas.character import CharacterCreate, CharacterResponse, CharacterUpdate
 from app.schemas.ability import AbilityCreate, AbilityResponse
 
-from app.services.skills import generate_skills
+from app.services.skills import generate_skills, generate_saving_throws
 from app.services.level import calculate_level
 from app.services.proeficiency import calculate_proficiency_bonus
 
@@ -77,6 +77,9 @@ def list_characters(db: Session = Depends(get_db)):
 @router.get("/{character_id}", response_model=CharacterResponse)
 def get_character(character_id: int, db: Session = Depends(get_db)):
     character = db.query(Character).filter(Character.id == character_id).first()
+    # Se o personagem antigo não tem o campo gravado no banco
+    if not character.saving_throws:
+        character.saving_throws = generate_saving_throws(character)
     if not character:
         raise HTTPException(status_code=404, detail="Character not found")
     return character

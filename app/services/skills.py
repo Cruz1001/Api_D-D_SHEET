@@ -20,11 +20,18 @@ ALL_SKILLS = [
     {"name": "Performance", "attribute": "charisma"},
     {"name": "Persuasion", "attribute": "charisma"},
 ]
-
+# --- ADICIONE ISSO AQUI ---
+ALL_SAVES = [
+    {"name": "Strength", "attribute": "strength"},
+    {"name": "Dexterity", "attribute": "dexterity"},
+    {"name": "Constitution", "attribute": "constitution"},
+    {"name": "Intelligence", "attribute": "intelligence"},
+    {"name": "Wisdom", "attribute": "wisdom"},
+    {"name": "Charisma", "attribute": "charisma"},
+]
 
 def attribute_modifier(score: int) -> int:
     return (score - 10) // 2
-
 
 def generate_skills(character: CharacterBase) -> list[Skill]:
     return [
@@ -32,9 +39,19 @@ def generate_skills(character: CharacterBase) -> list[Skill]:
             name=skill["name"],
             attribute=skill["attribute"],
             proficient=False,
-            value=attribute_modifier(
-                getattr(character, skill["attribute"])
-            )
+            value=attribute_modifier(getattr(character, skill["attribute"]))
         )
-        for skill in ALL_SKILLS
+        for skill in ALL_SKILLS if skill # o if skill evita o erro do dicionário vazio {} que estava no seu código
+    ]
+
+# --- ADICIONE ESSA FUNÇÃO TAMBÉM ---
+def generate_saving_throws(character: CharacterBase) -> list[Skill]:
+    return [
+        Skill(
+            name=save["name"],
+            attribute=save["attribute"],
+            proficient=False,
+            value=attribute_modifier(getattr(character, save["attribute"]))
+        )
+        for save in ALL_SAVES
     ]
